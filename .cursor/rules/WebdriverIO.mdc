@@ -1,0 +1,6 @@
+---
+description: 
+alwaysApply: true
+---
+
+始终采用WebdriverIO作为e2e/app测试的API接口

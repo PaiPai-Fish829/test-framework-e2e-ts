@@ -1,0 +1,42 @@
+cases:
+  - name: standard_user登录成功
+    username: standard_user
+    password: secret_sauce
+    expectType: success
+    expectedTitle: Products
+    expectedUrlIncludes: /inventory.html
+
+  - name: locked_out_user登录失败
+    username: locked_out_user
+    password: secret_sauce
+    expectType: error
+    expectedErrorIncludes: Sorry, this user has been locked out.
+
+  - name: problem_user登录成功
+    username: problem_user
+    password: secret_sauce
+    expectType: success
+    expectedTitle: Products
+    expectedUrlIncludes: /inventory.html
+
+  - name: performance_glitch_user登录成功
+    username: performance_glitch_user
+    password: secret_sauce
+    expectType: success
+    expectedTitle: Products
+    expectedUrlIncludes: /inventory.html
+    expectedErrorIncludes: Sorry, this user has been locked out.
+
+  - name: error_user登录失败
+    username: error_user
+    password: secret_sauce
+    expectType: success
+    expectedTitle: Products
+    expectedUrlIncludes: /inventory.html
+
+  - name: visual_user登录成功
+    username: visual_user
+    password: secret_sauce
+    expectType: success
+    expectedTitle: Products
+    expectedUrlIncludes: /inventory.html

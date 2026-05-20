@@ -1,0 +1,14 @@
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+reports/*
+!reports/.gitkeep
+playwright-report/
+test-results/
+wdio.log
+.env
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
