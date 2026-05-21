@@ -88,7 +88,7 @@ pnpm run test:web
 
 ```bash
 # Web
-pnpm run test:web
+corepack pnpm run test:web
 
 # 运行saucdemo样板案例
 corepack pnpm exec wdio run ./wdio.web.conf.ts --spec ./tests/web/specs/saucedemo-checkout.spec.ts --logLevel warn
