@@ -6,7 +6,7 @@ export const config = {
   runner: 'local',
   specs: ['./tests/web/specs/**/*.spec.ts'],
   maxInstances: 1,
-  logLevel: 'info',
+  logLevel: 'error',
   waitforTimeout: 10000,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 1,

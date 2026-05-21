@@ -1,0 +1,22 @@
+cases:
+  - name: standard_user可完成下单流程
+    username: standard_user
+    password: secret_sauce
+    expectType: success
+    addItemName: Sauce Labs Backpack
+    firstName: Test
+    lastName: User
+    postalCode: "100000"
+    expectedUrlIncludes: /checkout-complete.html
+    expectedCheckoutTitle: "Checkout: Overview"
+    expectedCompleteTitle: "Thank you for your order!"
+
+  - name: locked_out_user无法执行结账
+    username: locked_out_user
+    password: secret_sauce
+    expectType: error
+    addItemName: Sauce Labs Backpack
+    firstName: Test
+    lastName: User
+    postalCode: "100000"
+    expectedErrorIncludes: Sorry, this user has been locked out.
