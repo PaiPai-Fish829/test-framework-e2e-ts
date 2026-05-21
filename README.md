@@ -88,9 +88,10 @@ pnpm run test:web
 
 ```bash
 # Web
-pnpm run test:web
-corepack pnpm run test:web:wdio -- --spec ./tests/web/specs/saucedemo-login.spec.ts
+corepack pnpm run test:web
 
+# 运行saucdemo样板案例
+corepack pnpm exec wdio run ./wdio.web.conf.ts --spec ./tests/web/specs/saucedemo-checkout.spec.ts --logLevel warn
 
 # App
 pnpm run test:mobile
@@ -155,6 +156,29 @@ WDIO 产物在 `reports/wdio/wdio-junit.xml`，Vitest 产物在 `reports/vitest/
 - App：在 `tests/mobile/pages` 写页面封装，在 `tests/mobile/specs` 写移动端场景。
 - Unit：在 `tests/unit/tests` 写纯函数测试。
 - 复用类型与工具：放在 `shared/types`、`shared/utils`、`shared/fixtures`。
+
+### 8.1 YAML 测试用例加载工具
+
+项目已提供通用 YAML 用例加载器：`shared/utils/testCaseLoader.util.ts`。
+
+- 方法：`loadYamlCases<T>(fixtureRelativePath: string): T[]`
+- 入参：`fixtureRelativePath` 为相对于 `shared/fixtures` 的文件路径
+  - 例如：`saucedemo-login.cases.yaml`
+- 能力：
+  - 自动解析工具文件位置并定位 `shared/fixtures` 下的 YAML 文件
+  - 读取并解析 YAML
+  - 校验 YAML 必须包含非空 `cases` 数组
+  - 读取失败、解析失败、结构错误时抛出清晰错误信息
+
+在 spec 中的使用示例：
+
+```ts
+import { loadYamlCases } from '../../../shared/utils/testCaseLoader.util.js'
+
+type LoginCase = LoginSuccessCase | LoginErrorCase
+
+const loginCases = loadYamlCases<LoginCase>('saucedemo-login.cases.yaml')
+```
 
 ## 9. CI/CD 示例（GitHub Actions）
 
