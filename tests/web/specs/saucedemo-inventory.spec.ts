@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { browser } from '@wdio/globals'
-import yaml from 'js-yaml'
 
 import { SauceDemoInventoryFlow } from '../flows/saucedemo-inventory.flow.js'
+import { loadYamlCases } from '../../../shared/utils/testCaseLoader.util.js'
 
 interface InventorySuccessCase {
   name: string
@@ -30,21 +27,7 @@ interface InventoryErrorCase {
 
 type InventoryCase = InventorySuccessCase | InventoryErrorCase
 
-function loadCases(): InventoryCase[] {
-  const currentFile = fileURLToPath(import.meta.url)
-  const currentDir = path.dirname(currentFile)
-  const caseFile = path.resolve(currentDir, '../../../shared/fixtures/saucedemo-inventory.cases.yaml')
-  const raw = readFileSync(caseFile, 'utf8')
-  const parsed = yaml.load(raw) as { cases?: InventoryCase[] }
-
-  if (!Array.isArray(parsed?.cases) || parsed.cases.length === 0) {
-    throw new Error('saucedemo-inventory.cases.yaml must contain a non-empty "cases" array')
-  }
-
-  return parsed.cases
-}
-
-const inventoryCases = loadCases()
+const inventoryCases = loadYamlCases<InventoryCase>('saucedemo-inventory.cases.yaml')
 
 describe('SauceDemo inventory', () => {
   for (const caseData of inventoryCases) {

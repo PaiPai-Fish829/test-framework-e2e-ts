@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { browser } from '@wdio/globals'
-import yaml from 'js-yaml'
 
 import { SauceDemoCheckoutFlow } from '../flows/saucedemo-checkout.flow.js'
+import { loadYamlCases } from '../../../shared/utils/testCaseLoader.util.js'
 
 interface CheckoutSuccessCase {
   name: string
@@ -35,21 +32,7 @@ interface CheckoutErrorCase {
 
 type CheckoutCase = CheckoutSuccessCase | CheckoutErrorCase
 
-function loadCases(): CheckoutCase[] {
-  const currentFile = fileURLToPath(import.meta.url)
-  const currentDir = path.dirname(currentFile)
-  const caseFile = path.resolve(currentDir, '../../../shared/fixtures/saucedemo-checkout.cases.yaml')
-  const raw = readFileSync(caseFile, 'utf8')
-  const parsed = yaml.load(raw) as { cases?: CheckoutCase[] }
-
-  if (!Array.isArray(parsed?.cases) || parsed.cases.length === 0) {
-    throw new Error('saucedemo-checkout.cases.yaml must contain a non-empty "cases" array')
-  }
-
-  return parsed.cases
-}
-
-const checkoutCases = loadCases()
+const checkoutCases = loadYamlCases<CheckoutCase>('saucedemo-checkout.cases.yaml')
 
 describe('SauceDemo checkout', () => {
   for (const caseData of checkoutCases) {
