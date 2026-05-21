@@ -80,6 +80,20 @@ describe('SauceDemo inventory', () => {
       if (caseData.expectedCartBadge) {
         assert.equal(result.cartBadgeText, caseData.expectedCartBadge)
       }
+
+      if (caseData.addItemName) {
+        assert.ok(result.cartFlowResult, 'expected cart flow result to be available')
+        assert.equal(result.cartFlowResult?.hasExpectedItem, true)
+        assert.ok(
+          result.cartFlowResult?.currentUrl.includes('/cart.html'),
+          `expected cart url to include /cart.html, actual: ${result.cartFlowResult?.currentUrl}`
+        )
+        assert.equal(result.cartFlowResult?.cartTitle, 'Your Cart')
+        assert.ok(
+          result.cartFlowResult?.cartItemNames.includes(caseData.addItemName),
+          `expected cart items to include "${caseData.addItemName}", actual: ${result.cartFlowResult?.cartItemNames.join(', ')}`
+        )
+      }
     })
   }
 

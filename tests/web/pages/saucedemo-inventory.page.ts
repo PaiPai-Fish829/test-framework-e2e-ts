@@ -1,4 +1,4 @@
-import { $, $$ } from '@wdio/globals'
+import { $, $$, browser } from '@wdio/globals'
 
 export class SauceDemoInventoryPage {
   private get title() {
@@ -11,6 +11,14 @@ export class SauceDemoInventoryPage {
 
   private get cartBadge() {
     return $('[data-test="shopping-cart-badge"]')
+  }
+
+  private get shoppingCartLink() {
+    return $('[data-test="shopping-cart-link"]')
+  }
+
+  private get shoppingCartTitle() {
+    return $('//span[@data-test="title" and normalize-space()="Your Cart"]')
   }
 
   async waitForReady(): Promise<void> {
@@ -51,5 +59,23 @@ export class SauceDemoInventoryPage {
       return ''
     }
     return (await this.cartBadge.getText()).trim()
+  }
+
+  async clickShoppingCartLink(): Promise<void> {
+    await this.shoppingCartLink.waitForClickable({ timeout: 10000 })
+    await this.shoppingCartLink.click()
+  }
+
+  async waitForShoppingCartPage(): Promise<void> {
+    await browser.waitUntil(async () => this.isOnShoppingCartPage(), {
+      timeout: 10000,
+      timeoutMsg: '等待跳转到购物车页面超时',
+    })
+  }
+
+  async isOnShoppingCartPage(): Promise<boolean> {
+    const currentUrl = await browser.getUrl()
+    const titleDisplayed = await this.shoppingCartTitle.isDisplayed()
+    return currentUrl.includes('/cart.html') && titleDisplayed
   }
 }
