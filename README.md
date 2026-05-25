@@ -90,11 +90,8 @@ pnpm run test:web
 # Web
 corepack pnpm run test:web
 
-# 运行saucdemo样板案例
-corepack pnpm exec wdio run ./wdio.web.conf.ts --spec ./tests/web/specs/saucedemo-checkout.spec.ts --logLevel warn
-
 # App
-pnpm run test:mobile
+corepack pnpm run test:mobile
 
 # API
 pnpm run test:api
@@ -107,6 +104,15 @@ pnpm run test:e2e
 
 # 全量（Unit + E2E）
 pnpm run test:all
+```
+
+### 模板案例
+```bash
+# 运行saucdemo样板案例
+corepack pnpm exec wdio run ./wdio.web.conf.ts --spec ./tests/web/specs/saucedemo-checkout.spec.ts --logLevel warn
+
+# 运行App样板案例
+corepack pnpm exec wdio run ./wdio.conf.ts --spec ./tests/mobile/specs/android-settings-device-info.spec.ts --logLevel warn
 ```
 
 ## 6. 生成与查看报告
