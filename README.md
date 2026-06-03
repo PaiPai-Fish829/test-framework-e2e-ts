@@ -113,6 +113,9 @@ corepack pnpm exec wdio run ./wdio.web.conf.ts --spec ./tests/web/specs/saucedem
 
 # 运行App样板案例
 corepack pnpm exec wdio run ./wdio.conf.ts --spec ./tests/mobile/specs/android-settings-device-info.spec.ts --logLevel warn
+
+# TP-Link 登录（断言：提交后账号/密码输入框是否仍可见；建议 --logLevel warn）
+corepack pnpm exec wdio run ./wdio.conf.ts --spec ./tests/mobile/specs/tplink-login.spec.ts --logLevel warn
 ```
 
 ## 6. 生成与查看报告
@@ -162,10 +165,11 @@ WDIO 产物在 `reports/wdio/wdio-junit.xml`，Vitest 产物在 `reports/vitest/
 - App：在 `tests/mobile/pages` 写页面封装，在 `tests/mobile/specs` 写移动端场景。
 - Unit：在 `tests/unit/tests` 写纯函数测试。
 - 复用类型与工具：放在 `shared/types`、`shared/utils`、`shared/fixtures`。
+- 工具分层：`shared/utils/` 根目录为公用；`shared/utils/app/` 为移动端；`shared/utils/web/` 为 Web 专用。详见 `shared/utils/README.md`。
 
-### 8.1 YAML 测试用例加载工具
+### 8.1 YAML 测试用例加载工具（公用）
 
-项目已提供通用 YAML 用例加载器：`shared/utils/testCaseLoader.util.ts`。
+项目已提供通用 YAML 用例加载器：`shared/utils/testCaseLoader.util.ts`（公用，Web / Mobile 均可使用）。
 
 - 方法：`loadYamlCases<T>(fixtureRelativePath: string): T[]`
 - 入参：`fixtureRelativePath` 为相对于 `shared/fixtures` 的文件路径
@@ -185,6 +189,54 @@ type LoginCase = LoginSuccessCase | LoginErrorCase
 
 const loginCases = loadYamlCases<LoginCase>('saucedemo-login.cases.yaml')
 ```
+
+### 8.2 移动端 App 工具（`shared/utils/app/`）
+
+- `app-config.util.ts`：从 `.env` 读取 `ANDROID_APP_PACKAGE` / `ANDROID_APP_ACTIVITY`（iOS 为 `IOS_BUNDLE_ID`）。
+- `app-lifecycle.util.ts`：`terminateMobileApp`、`restartMobileApp`、`retryWithMobileAppRestart`（重试次数默认 2，可覆盖）。
+- `app-ui.util.ts`：`scrollUntil`、`scrollAndCollectListRows` 等页面内滑动与列表采集；预设 `normal` / `strict`
+
+在 mobile spec 中用文件级 Mocha 钩子管理 App 的示例：
+
+```ts
+import {
+  restartMobileApp,
+  retryWithMobileAppRestart,
+  terminateMobileApp,
+} from '../../../shared/utils/app/app-lifecycle.util.js'
+
+describe('场景名', () => {
+  before(async () => {
+    await restartMobileApp()
+  })
+
+  after(async () => {
+    await terminateMobileApp()
+  })
+
+  it('用例', async () => {
+    const page = new MyPage()
+    await retryWithMobileAppRestart('打开目标页', async () => {
+      await page.openTargetScreen()
+    })
+  })
+})
+```
+
+滑动查找示例：
+
+```ts
+import { scrollUntil, scrollAndCollectListRows } from '../../../shared/utils/app/app-ui.util.js'
+
+const selector = await scrollUntil(async () => findOnScreen(), { preset: 'strict', maxSwipes: 10 })
+const rows = await scrollAndCollectListRows({
+  rowSelector: '//android.widget.LinearLayout/android.widget.RelativeLayout',
+}, { preset: 'normal' })
+```
+
+### 8.3 Web 端工具（`shared/utils/web/`）
+
+Web 专用工具放在 `shared/utils/web/`；跨端能力使用根目录公用工具（如 `wait.util.ts`）。
 
 ## 9. CI/CD 示例（GitHub Actions）
 

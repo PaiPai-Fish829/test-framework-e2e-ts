@@ -13,6 +13,12 @@
       ],
       "@shared/*": [
         "./shared/*"
+      ],
+      "@shared/utils/app/*": [
+        "./shared/utils/app/*"
+      ],
+      "@shared/utils/web/*": [
+        "./shared/utils/web/*"
       ]
     },
     "types": [

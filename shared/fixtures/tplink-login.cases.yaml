@@ -1,0 +1,22 @@
+# TP-Link 登录参数化
+# 正例账号密码：.env 的 TPLINK_USERNAME / TPLINK_PASSWORD
+# expectLogin: true=登录成功（离开登录页）；false=未登录成功（仍在登录页）
+# submit: false=只填表不点登录（如空密码时按钮不可点）
+
+cases:
+  - name: 正确账号密码-登录成功
+    expectLogin: true
+
+  - name: 错误密码-登录失败
+    expectLogin: false
+    password: WrongPassword_ForAutomation
+
+  - name: 错误账号-登录失败
+    expectLogin: false
+    username: "19900000000"
+    password: AnyPassword123
+
+  - name: 空密码-停留在登录页
+    expectLogin: false
+    submit: false
+    password: ""
