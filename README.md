@@ -1,4 +1,4 @@
-# test-automation-hub
+# 自动化测试框架
 
 一个基于 TypeScript 的统一测试框架，覆盖：
 
